@@ -15,6 +15,6 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println(run(*host, iterations_count))
+	fmt.Println(ding.run(*host, iterations_count))
 
 }
