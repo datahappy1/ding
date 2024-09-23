@@ -1,4 +1,4 @@
-package ding
+package internal
 
 import (
 	"bufio"
@@ -15,7 +15,7 @@ import (
 )
 
 const DEFAULT_HOST = "www.seznam.cz"
-const MAX_ITERATIONS = 5
+const MAX_ITERATIONS = 50
 const DEFAULT_TIME_MS = 100
 const TIME_TO_BEEP_DEFAULT_MULTIPLICATOR = 10
 
@@ -46,7 +46,7 @@ func generate_beep(length int) {
 	}
 }
 
-func run(host string, iterations int) {
+func Run(host string, iterations int) {
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "INFO: ", log.Lshortfile)
