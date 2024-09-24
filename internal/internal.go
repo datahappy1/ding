@@ -2,10 +2,7 @@ package internal
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
-	"log"
-	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -13,11 +10,6 @@ import (
 
 	"github.com/gen2brain/beeep"
 )
-
-const DEFAULT_HOST = "www.seznam.cz"
-const MAX_ITERATIONS = 50
-const DEFAULT_TIME_MS = 100
-const TIME_TO_BEEP_DEFAULT_MULTIPLICATOR = 10
 
 func parse_time_from_line(line string) int {
 	re := regexp.MustCompile(`time=\d*`)
@@ -34,7 +26,7 @@ func parse_time_from_line(line string) int {
 			panic(err)
 		}
 	} else {
-		time_value = DEFAULT_TIME_MS
+		time_value = -1
 	}
 	return time_value
 }
@@ -46,22 +38,11 @@ func generate_beep(length int) {
 	}
 }
 
-func Run(host string, iterations int) {
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "INFO: ", log.Lshortfile)
+func Run(host string, max_iterations int, default_time_ms int, time_to_beep_default_multiplicator int) {
 
-		infof = func(info string) {
-			logger.Output(2, info)
-		}
-	)
+	fmt.Printf("running with arguments host:%s, max_iterations:%d, time_ms:%d, time_to_beep_default_multiplicator:%d \n", host, max_iterations, default_time_ms, time_to_beep_default_multiplicator)
 
-	ping_command := ""
-	if host != "" {
-		ping_command = fmt.Sprintf("ping %s -t ", host)
-	} else {
-		ping_command = fmt.Sprintf("ping %s -t ", DEFAULT_HOST)
-	}
+	ping_command := fmt.Sprintf("ping %s -t ", host)
 
 	cmdArgs := strings.Fields(ping_command)
 
@@ -79,24 +60,27 @@ func Run(host string, iterations int) {
 		}
 		r := bufio.NewReader(stdout)
 		line, _, _ := r.ReadLine()
-		infof(string(line))
+		// fmt.Println(string(line))
 
 		if strings.HasPrefix(string(line), "with 32 bytes of data:") {
 			continue
 		}
 
 		time_value := parse_time_from_line(string(line))
+		if time_value == -1 {
+			time_value = default_time_ms
+		}
 
 		fmt.Println("ping round trip time (seconds):", time_value)
 
-		generate_beep(time_value * TIME_TO_BEEP_DEFAULT_MULTIPLICATOR)
+		generate_beep(time_value * time_to_beep_default_multiplicator)
 
 		num = num + 1
 
-		if num > MAX_ITERATIONS {
+		if num > max_iterations {
 			break
 		}
 	}
-	infof("reached max iterations count")
-	os.Exit(0)
+	fmt.Printf("reached max iterations count (%d)", max_iterations)
+
 }
