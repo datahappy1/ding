@@ -57,7 +57,8 @@ func Run(host string, max_iterations int, time_to_beep_default_multiplicator int
 	for {
 		_, err := stdout.Read(oneByte)
 		if err != nil {
-			panic(err)
+			fmt.Println("unexpected response, check the host name")
+			return
 		}
 		r := bufio.NewReader(stdout)
 		line, _, _ := r.ReadLine()
