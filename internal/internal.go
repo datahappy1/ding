@@ -26,7 +26,7 @@ func parse_time_from_line(line string) int {
 			panic(err)
 		}
 	} else {
-		time_value = -1
+		time_value = 0
 	}
 	return time_value
 }
@@ -38,9 +38,10 @@ func generate_beep(length int) {
 	}
 }
 
-func Run(host string, max_iterations int, default_time_ms int, time_to_beep_default_multiplicator int) {
+func Run(host string, max_iterations int, time_to_beep_default_multiplicator int) {
 
-	fmt.Printf("running with arguments host:%s, max_iterations:%d, time_ms:%d, time_to_beep_default_multiplicator:%d \n", host, max_iterations, default_time_ms, time_to_beep_default_multiplicator)
+	fmt.Printf("running with host:%s, max iters:%d, default multiplicator:%d \n",
+		host, max_iterations, time_to_beep_default_multiplicator)
 
 	ping_command := fmt.Sprintf("ping %s -t ", host)
 
@@ -67,9 +68,6 @@ func Run(host string, max_iterations int, default_time_ms int, time_to_beep_defa
 		}
 
 		time_value := parse_time_from_line(string(line))
-		if time_value == -1 {
-			time_value = default_time_ms
-		}
 
 		fmt.Println("ping round trip time (seconds):", time_value)
 

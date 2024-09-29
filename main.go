@@ -9,8 +9,7 @@ import (
 
 const DEFAULT_HOST = "www.seznam.cz"
 const MAX_ITERATIONS = 10
-const DEFAULT_TIME_MS = 10
-const TIME_TO_BEEP_DEFAULT_MULTIPLICATOR = 30
+const TIME_TO_BEEP_DEFAULT_MULTIPLICATOR = 10
 
 var (
 	defaultHostFlag string
@@ -22,6 +21,6 @@ func main() {
 	flag.IntVar(&maxItersFlag, "max_iterations", MAX_ITERATIONS, "max iterations to proceed")
 	flag.Parse()
 
-	internal.Run(defaultHostFlag, maxItersFlag, DEFAULT_TIME_MS, TIME_TO_BEEP_DEFAULT_MULTIPLICATOR)
+	internal.Run(defaultHostFlag, maxItersFlag, TIME_TO_BEEP_DEFAULT_MULTIPLICATOR)
 	os.Exit(0)
 }
